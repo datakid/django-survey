@@ -431,7 +431,7 @@ def answers_detail(request, survey_slug, key,
         return HttpResponse(unicode(_('Insufficient Privileges.')), status=403)
     return render_to_response(template_name,
         {'survey': survey, 'submission': answers,
-         'title': survey.title + u' - ' + unicode(_('Submission'))},
+         'title': survey.title + u' - ' + unicode(_('Submission')), 'key':key.lower() },
         context_instance=RequestContext(request))
 
 def delete_image(request, model_string,object_id):
