@@ -10,7 +10,6 @@ from views import answers_list, answers_detail,\
                 choice_add, choice_update, delete_image,\
                 visible_survey_list, object_delete
 
-
 urlpatterns = patterns('',
 
 
@@ -27,10 +26,10 @@ urlpatterns = patterns('',
     url(r'^(?P<survey_slug>[-\w]+)/delete$', object_delete, {'object_type': 'survey', }, name='survey-delete'),
     url(r'^(?P<survey_slug>[-\w]+)/question/add$', question_add,   name='question-add'),
     url(r'^(?P<survey_slug>[-\w]+)/(?P<question_id>\d+)/question/update$', question_update,   name='question-update'),
-    url(r'^(?P<survey_slug>[-\w]+)/(?P<object_id>\d+)/question/delete$', object_delete, {'object_type': 'question', }, name='question-delete'),
+    url(r'^(?P<survey_slug>[-\w]+)/(?P<question_id>\d+)/question/delete$', object_delete, {'object_type':'question', }, name='question-delete'),
+    url(r'^(?P<survey_slug>[-\w]+)/(?P<question_id>\d+)/choice/add$', choice_add,   name='choice-add'),
+    url(r'^(?P<survey_slug>[-\w]+)/(?P<question_id>\d+)/choice/(?P<choice_id>\d+)/update$', choice_update,   name='choice-update'),
 
-    url(r'^(?P<question_id>\d+)/choice/add$', choice_add,   name='choice-add'),
-    url(r'^(?P<question_id>\d+)/choice/(?P<choice_id>\d+)/update$', choice_update,   name='choice-update'),
     url(r'^(?P<survey_slug>[-\w]+)/choice/(?P<object_id>\d+)/delete$', object_delete, {'object_type': 'choice', }, name='choice-delete'),
     url(r'^delete_image/(?P<model_string>[-\w]+)/(?P<object_id>\d+)/$', delete_image, name='delete-image'),
     url(r'^(?P<survey_slug>[-\w]+)/$', survey_detail,   name='survey-detail'),
