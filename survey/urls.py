@@ -13,10 +13,9 @@ from views import answers_list, answers_detail,\
 
 urlpatterns = patterns('',
 
-    url(r'^visible/$', visible_survey_list, name='surveys-visible'),
-    url(r'^editable/$', editable_survey_list, name='surveys-editable'),
 
-    url(r'^detail/(?P<survey_slug>[-\w]+)/$', survey_detail,   name='survey-detail'),
+    url(r'^$', visible_survey_list, name='surveys-visible'),
+    url(r'^editable/$', editable_survey_list, name='surveys-editable'),
 
     url(r'^answers/(?P<survey_slug>[-\w]+)/$',
         answers_list,    name='survey-results'),
@@ -38,4 +37,6 @@ urlpatterns = patterns('',
     url(r'^choice/delete/(?P<survey_slug>[-\w]+)/(?P<object_id>\d+)/$', object_delete, {'object_type': 'choice', }, name='choice-delete'),
 
     url(r'^delete_image/(?P<model_string>[-\w]+)/(?P<object_id>\d+)/$', delete_image, name='delete-image'),
+    url(r'^(?P<survey_slug>[-\w]+)/$', survey_detail,   name='survey-detail'),
+
     )
