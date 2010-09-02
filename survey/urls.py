@@ -4,11 +4,11 @@ from django.views.generic.list_detail import object_list
 from django.conf.urls.defaults import *
 
 from views import answers_list, answers_detail,\
-                survey_detail, survey_edit, survey_add,\
-                editable_survey_list, survey_update,\
-                question_add, question_update,\
-                choice_add, choice_update, delete_image,\
-                visible_survey_list, object_delete
+               survey_detail, survey_edit, survey_add,\
+               editable_survey_list, survey_update,\
+               question_add, question_update,\
+               choice_add, choice_update, delete_image,\
+               visible_survey_list, object_delete
 
 urlpatterns = patterns('',
 

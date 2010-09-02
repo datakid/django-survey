@@ -250,7 +250,7 @@ def question_update(request,survey_slug,question_id,
 
 @staff_member_required
 @permission_required('survey.add_choice')
-def choice_add(request,question_id, survey_slug
+def choice_add(request,question_id, survey_slug,
                 group_slug=None, group_slug_field=None,
                 group_qs=None,
                 template_name = 'survey/choice_add.html',

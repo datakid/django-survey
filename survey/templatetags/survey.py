@@ -34,7 +34,7 @@ def do_get_survey(parser, token):
     '''
         Retrieves a survey by slug
         {% get_survey <slug> as <template var> %}
-    '''
+     '''
     try:
         bits = token.split_contents()
     except ValueError:
@@ -45,4 +45,4 @@ def do_get_survey(parser, token):
         raise template.TemplateSyntaxError(_("second argument to tag must be 'as'"))
     return GetSurveyNode(bits[1], bits[3])
 
-register.tag('get_survey, do_get_survey)
+register.tag('get_survey', do_get_survey)
