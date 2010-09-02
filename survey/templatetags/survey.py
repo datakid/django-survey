@@ -43,6 +43,6 @@ def do_get_survey(parser, token):
         raise template.TemplateSyntaxError(_('tag requires exactly three arguments'))
     if bits[2] != 'as':
         raise template.TemplateSyntaxError(_("second argument to tag must be 'as'"))
-    return GetGalleryNode(bits[1], bits[3])
+    return GetSurveyNode(bits[1], bits[3])
 
 register.tag('get_survey, do_get_survey)
