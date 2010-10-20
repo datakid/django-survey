@@ -1,12 +1,10 @@
-from models import QTYPE_CHOICES, Answer, Survey, Question, Choice
+from models import Answer, Survey, Question, Choice
 from django.conf import settings
-from django.forms import BaseForm, Form, ValidationError
-from django.forms import CharField, ChoiceField, SplitDateTimeField,\
-                            CheckboxInput, BooleanField,FileInput,\
-                            FileField, ImageField
+from django.forms import Form, ValidationError
+from django.forms import CharField, ChoiceField, SplitDateTimeField
 from django.forms import Textarea, TextInput, Select, RadioSelect,\
                             CheckboxSelectMultiple, MultipleChoiceField,\
-                            SplitDateTimeWidget,MultiWidget, MultiValueField
+                            SplitDateTimeWidget,MultiWidget
 from django.forms.forms import BoundField
 from django.forms.models import ModelForm
 from django.utils.translation import ugettext_lazy as _

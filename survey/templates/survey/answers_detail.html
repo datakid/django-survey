@@ -2,7 +2,7 @@
 {% block content %}
 <h1>{{ title }}</h1>
 {% for answer in submission %}
-<h2>{{ answer.question.text }}</h2>
+<h3>{{ answer.question.text }}</h3>
 <div>{{ answer.text }}</div>
 <br/>
 {% endfor %}

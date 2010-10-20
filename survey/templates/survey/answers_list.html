@@ -1,33 +1,19 @@
 {% extends "survey/base.html" %}
 {% load i18n %}
-{% block scripts %}{% load adminmedia %}
-<style type="text/css">
-.question pre { margin-left: 2em; }
-.question .bar { margin-left: 2em; }
-.question .barAnswer { font-weight: bold; width: 100% !important; text-align: left;}
-.question .answer { margin-left: 2em; }
-.question .question-results .barColor {
-    background-color: #7ca0c7;
-    background-image: url({% admin_media_prefix %}img/admin/default-bg.gif);
-    background-repeat: repeat-x;
-    background-attachment: scroll;
-    padding: 0px;
-    background-x-position: left;
-    background-y-position: top;
-}
-</style>
-{% endblock %}
+{% load survey %}
+{% block page_title %}{{ title }}{% endblock %}
 {% block content %}
 <h1>{{ title }} <i>({{ survey.interview_count }} {% trans "Interview" %}{{ survey.interview_count|pluralize:"s" }})</i></h1>
 <br/>
-{% for question in survey.questions.all %}
+
+{% for question in survey.questions.all|order_by:"order" %}
 <div class='question'>
-    <h2 onmouseout='this.style.backgroundColor="#FFF";'
+    <h3 onmouseout='this.style.backgroundColor="#FFF";'
         onmouseover='this.style.backgroundColor="#ECECEC";'
         onclick='var foo=document.getElementById("results{{forloop.counter}}");
                  if (foo.style.display=="none") { foo.style.display="block"; }
                  else { foo.style.display="none"; }'
-    >{{ question.text }} <i>({{ question.answer_count }} {% if question.choices.count %}{% trans "Vote" %}{% else %}{% trans "Answer" %}{% endif %}{{ question.answer_count|pluralize:"s" }})</i></h2>
+    >{{ question.text }} <i>({{ question.answer_count }} {% if question.choices.count %}{% trans "Vote" %}{% else %}{% trans "Answer" %}{% endif %}{{ question.answer_count|pluralize:"s" }})</i></h3>
     <div id='results{{forloop.counter}}' class='question-results'>
 {% if question.choices.count %}
     {% for choice in question.choices.iterator %}

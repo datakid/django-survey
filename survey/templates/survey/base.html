@@ -1,1 +1,34 @@
 {% extends "base.html" %}
+{% load adminmedia %}
+
+{% block css_custom %}
+<style>
+.question pre { margin-left: 2em; }
+.question .bar { margin-left: 2em; }
+.question .barAnswer { font-weight: bold; width: 100% !important; text-align: left;}
+.question .answer { margin-left: 2em; }
+.question .question-results {padding-top: 10px;}
+.question .question-results .barColor {
+    background-color: #7ca0c7;
+    background-image: url({% admin_media_prefix %}img/admin/default-bg.gif);
+    background-repeat: repeat-x;
+    background-attachment: scroll;
+    padding: 0px;
+    background-x-position: left;
+    background-y-position: top;
+}
+span.helptext {color:green;}
+div.horizontal ul li {padding-left:10px; margin-left:10px; display:inline;}
+div.horizontal ul {margin-left:20px; padding-left:10px; display: inline;}
+input[type="radio"] { vertical-align: top; }
+.error { border: 2px solid red; background-color: #FCDCDD;}
+label {
+	display: inline;
+	float: none;
+}
+.question { border-bottom: 1px solid silver; padding: 10px;}
+.required { font-weight:bold; color: grey;}
+ul li {list-style:none;}
+.errorlist { border: 2px solid red; background-color: #FCDCDD;}
+</style>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django import template
-from survey.models import Survey
+from ..models import Survey
 
 register = template.Library()
 

@@ -191,9 +191,8 @@ class Question(models.Model):
         return u' - '.join([self.survey.slug, self.text])
 
     class Meta:
-        #unique_together = (('survey', 'text'),)
         order_with_respect_to='survey'
-        ordering = ('survey', 'order')
+        ordering = ('survey', 'order', )
 
     @models.permalink
     def get_update_url(self):
