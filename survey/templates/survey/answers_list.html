@@ -8,12 +8,11 @@
 
 {% for question in survey.questions.all|order_by:"order" %}
 <div class='question'>
-    <h3 onmouseout='this.style.backgroundColor="#FFF";'
-        onmouseover='this.style.backgroundColor="#ECECEC";'
-        onclick='var foo=document.getElementById("results{{forloop.counter}}");
+    <div class="question_header" onclick='var foo=document.getElementById("results{{forloop.counter}}");
                  if (foo.style.display=="none") { foo.style.display="block"; }
                  else { foo.style.display="none"; }'
-    >{{ question.text }} <i>({{ question.answer_count }} {% if question.choices.count %}{% trans "Vote" %}{% else %}{% trans "Answer" %}{% endif %}{{ question.answer_count|pluralize:"s" }})</i></h3>
+    >{{ question.text }} <i>({{ question.answer_count }} {% if question.choices.count %}{% trans "Vote" %}{% else %}{% trans "Answer" %}{% endif %}{{ question.answer_count|pluralize:"s" }})</i></div>
+<div class="question_input">
     <div id='results{{forloop.counter}}' class='question-results'>
 {% if question.choices.count %}
     {% for choice in question.choices.iterator %}
@@ -33,6 +32,7 @@
     {% endfor %}
 {% endif %}
     <br/>
+    </div>
     </div>
 </div>
 {% endfor %}
