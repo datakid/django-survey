@@ -2,18 +2,12 @@ from survey.models import Answer, Choice, Question, Survey
 from django.contrib import admin
 
 class ChoiceInline(admin.TabularInline):
-    """
-    A newforms-admin inline option class for the ``Choice`` model.
-    """
     model = Choice
     extra = 2
-    fields = ('text', 'order',)
+    exclude = ('image', )
     template = 'admin/survey/choice/edit_inline_tabular.html'
 
 class QuestionOptions(admin.ModelAdmin):
-    """
-    A newforms-admin options class for the ``Question`` model.
-    """
     list_select_related = True
     list_filter = ('survey', 'qtype')
     list_display_links = ('text',)
@@ -22,27 +16,18 @@ class QuestionOptions(admin.ModelAdmin):
     inlines = [ ChoiceInline, ]
 
 class QuestionInline(admin.TabularInline):
-    """
-    A newforms-admin inline option class for the ``Question`` model.
-    """
     model = Question
     extra = 4
-    fields = ('text', 'order',)
+    exclude = ('qstyle', 'required', 'image', 'choice_num_min', 'choice_num_max', )
     template = 'admin/survey/question/edit_inline_tabular.html'
 
 class SurveyOptions(admin.ModelAdmin):
-    """
-    A newforms-admin options class for the ``Survey`` model.
-    """
-    prepopulated_fields = {'slug': ('title',)}
+    prepopulated_fields = {'slug_en': ('title_en',)}
     list_display = ('__unicode__', 'visible', 'public',
                         'opens', 'closes', 'open')
     inlines = [QuestionInline]
 
 class AnswerOptions(admin.ModelAdmin):
-    """
-    A newforms-admin options class for the ``Answer`` model.
-    """
     list_display = ('interview_uuid','question','user', 'submission_date',
                     'session_key', 'text')
     #list_filter = ('question__survey',)

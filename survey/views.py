@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse, Http404
 from django.template import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from django.utils.translation import ugettext_lazy as _
-
+from django.utils import translation
 from survey.forms import forms_for_survey
 from survey.models import Survey, Answer
 
@@ -34,7 +34,7 @@ def _survey_redirect(request, survey,
         return HttpResponseRedirect(request.REQUEST['next'])
     if survey.answers_viewable_by(request.user):
         return HttpResponseRedirect(reverse('survey-results', None, (),
-                                                {'survey_slug': survey.slug}))
+                                                {'survey_slug': survey.__dict__['slug_'+translation.get_language()]}))
 
     # For this survey, have they answered any questions?
     if (hasattr(request, 'session') and Answer.objects.filter(
@@ -43,7 +43,7 @@ def _survey_redirect(request, survey,
             question__survey__slug=survey.slug).count()):
         return HttpResponseRedirect(
             reverse('answers-detail', None, (),
-                    {'survey_slug': survey.slug,
+                    {'survey_slug': survey.__dict__['slug_'+translation.get_language()],
                      'key': request.session.session_key.lower()}))
 
     # go to thank you page
@@ -60,7 +60,15 @@ def survey_detail(request, survey_slug,
     """
 
     """
-    survey = get_object_or_404(Survey.objects.filter(visible=True), slug=survey_slug)
+    filter_fields = {'visible': True, str('slug_' + translation.get_language())  : survey_slug }
+
+    try:
+        survey = Survey.objects.get(**filter_fields)
+    except Survey.DoesNotExist:
+        raise Http404
+
+    if survey.template_name:
+        template_name = survey.template_name
     if survey.closed:
         if survey.answers_viewable_by(request.user):
             return HttpResponseRedirect(reverse('survey-results', None, (),
@@ -105,7 +113,12 @@ def answers_list(request, survey_slug,
     """
     Shows a page showing survey results for an entire survey.
     """
-    survey = get_object_or_404(Survey.objects.filter(visible=True), slug=survey_slug)
+    filter_fields = {'visible': True, str('slug_' + translation.get_language())  : survey_slug }
+
+    try:
+        survey = Survey.objects.get(**filter_fields)
+    except Survey.DoesNotExist:
+        raise Http404
     # if the user lacks permissions, show an "Insufficient Permissions page"
     if not survey.answers_viewable_by(request.user):
         if (hasattr(request, 'session') and
@@ -133,8 +146,9 @@ def answers_detail(request, survey_slug, key,
 
     If the user lacks permissions, show an "Insufficient Permissions page".
     """
-    answers = Answer.objects.filter(session_key=key.lower(),
-        question__survey__visible=True, question__survey__slug=survey_slug).order_by('question__order')
+    filter_fields = {'session_key':key.lower(), 'question__survey__visible':True, str('question__survey__slug_'+translation.get_language()): survey_slug, 'visible': True,  }
+
+    answers = Answer.objects.filter(**filter_fields).order_by('question__order')
     if not answers.count(): raise Http404
     survey = answers[0].question.survey
 

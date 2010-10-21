@@ -1,16 +1,11 @@
-"""Survey Models
-"""
 import datetime
 
 from django.db import models
-from django.conf import settings
 from django.core.cache import cache
-from django.utils import encoding
 from django.template.defaultfilters import date as datefilter
 from django.utils.translation import ugettext_lazy as _
+from transmeta import TransMeta
 from django.contrib.auth.models import User
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes import generic
 
 
 QTYPE_CHOICES = (
@@ -22,23 +17,18 @@ QTYPE_CHOICES = (
     ('C', 'Checkbox List')
 )
 
-class SurveyManager(models.Manager):
-
-    def surveys_for(self, recipient):
-        recipient_type = ContentType.objects.get_for_model(recipient)
-        return Survey.objects.filter(visible=True,recipient_type=recipient_type, recipient_id=recipient.id)
-
-
 class Survey(models.Model):
+    __metaclass__ = TransMeta
     title   = models.CharField(_('survey title'), max_length=255)
     slug    = models.SlugField(_('slug'), max_length=255, unique=True)
     description= models.TextField(verbose_name=_("description"),
                             help_text=_("This field appears on the public web site and should give an overview to the interviewee"),
                             blank=True)
 
-    ## Add validation on datetimes
+    # Add validation on datetimes
     opens   = models.DateTimeField(_('survey starts accepting submissions on'))
     closes  = models.DateTimeField(_('survey stops accepting submissions on'))
+
     # Define the behavior of the survey
     visible = models.BooleanField(_('survey is visible'))
     public  = models.BooleanField(_('survey results are public'))
@@ -46,22 +36,12 @@ class Survey(models.Model):
                                      blank=True,default=False)
     allows_multiple_interviews = models.BooleanField(verbose_name=_("allows multiple interviews"),
                                                      blank=True, default=True)
-#    template_name = models.CharField(_('template name'),max_length=150,
-#                                     null=True, blank=True,
-#                                     help_text=_("This field is used to define a custom template "
-#                                     "(Example: 'dj_survey/template/my_add_interview_forms.html')."))
+    template_name = models.CharField(_('template name'),max_length=150,
+                                     null=True, blank=True,
+                                     help_text=_("This field is used to define a custom template "))
 
-    # Control who can edit the survey
-    # TODO: Plug this control in the view used to edit the survey
     created_by = models.ForeignKey(User, related_name="created_surveys")
     editable_by = models.ForeignKey(User, related_name="owned_surveys")
-
-    # Integration in Pinax
-    recipient_type = models.ForeignKey(ContentType, blank=True, null=True)
-    recipient_id = models.PositiveIntegerField(blank=True, null=True)
-    recipient = generic.GenericForeignKey('recipient_type', 'recipient_id')
-
-    objects = SurveyManager()
 
     @property
     def _cache_name(self):
@@ -153,32 +133,38 @@ class Survey(models.Model):
         if user.is_anonymous(): return False
         return user.has_perm('survey.view_answers')
 
+    class Meta:
+        translate = ('title', 'slug', 'description')
+
 
 class Question(models.Model):
+    __metaclass__ = TransMeta
     survey = models.ForeignKey(Survey, related_name='questions',
                                  verbose_name=_('survey'))
     qtype = models.CharField(_('question type'), max_length=2,
                                 choices=QTYPE_CHOICES)
     required = models.BooleanField(_('required'), default=True)
+
     # NOTE: changing type from TextField to Charfield to avoid this bug: http://code.google.com/p/django-survey/issues/detail?id=24
-    text     = models.CharField(_('question text'), max_length=500)#models.TextField(_('question text'))
+    text = models.CharField(_('question text'), max_length=500)#models.TextField(_('question text'))
     order = models.IntegerField(verbose_name = _("order"),
                                 null=True, blank=True)
+
     # TODO: Add a button or check box to remove the file. There are several
     # recipes floating on internet. I like the one with a custom widget
     image = models.ImageField(verbose_name=_("image"),
                               upload_to= "survey/images/questions" + "/%Y/%m/%d/",
                               null=True, blank= True)
+
     # Define if the user must select at least 'choice_num_min' number of
     # choices and at most 'choice_num_max'
     choice_num_min = models.IntegerField(_("minimum number of choices"),
                                          null=True, blank=True,)
     choice_num_max = models.IntegerField(_("maximum number of choices"),
                                          null=True, blank=True,)
-    # TODO: Modify the forms to respect the style defined by this attr (html,css)
 
+    # TODO: Modify the forms to respect the style defined by this attr (html,css)
     qstyle = models.CharField(_('HTML style'), max_length=500, blank=True)
-    ## model validation for requiring choices.
 
     @property
     def answer_count(self):
@@ -193,6 +179,7 @@ class Question(models.Model):
     class Meta:
         order_with_respect_to='survey'
         ordering = ('survey', 'order', )
+        translate = ('text', )
 
     @models.permalink
     def get_update_url(self):
@@ -204,18 +191,20 @@ class Question(models.Model):
         return self.choices.count()
 
 class Choice(models.Model):
+    __metaclass__ = TransMeta
+
     ## validate question is of proper qtype
     question = models.ForeignKey(Question, related_name='choices',
                                  verbose_name=_('question'))
     text = models.CharField(_('choice text'), max_length=500)
+
     # TODO: Add a button or check box to remove the file. There are several
     # recipes floating on internet. I like the one with a custom widget
     image = models.ImageField(verbose_name = _("image"),
                               upload_to= "survey/images/questions" + "/%Y/%m/%d/",
                               null=True ,blank= True)
 
-    order = models.IntegerField(verbose_name = _("order"),
-                                null=True, blank=True)
+    order = models.IntegerField(verbose_name = _("order"), null=True, blank=True)
 
     @models.permalink
     def get_update_url(self):
@@ -233,9 +222,9 @@ class Choice(models.Model):
         return self.text
 
     class Meta:
-        #unique_together = (('question', 'text'),)
         order_with_respect_to='question'
         ordering = ('question', 'order')
+        translate = ('text', )
 
 class Answer(models.Model):
     user = models.ForeignKey(User, related_name='answers',
