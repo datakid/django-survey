@@ -40,7 +40,7 @@ def _survey_redirect(request, survey,
     if (hasattr(request, 'session') and Answer.objects.filter(
             session_key=request.session.session_key.lower(),
             question__survey__visible=True,
-            question__survey__slug=survey.slug).count()):
+            question__survey__slug=survey.__dict__['slug_'+translation.get_language()]).count()):
         return HttpResponseRedirect(
             reverse('answers-detail', None, (),
                     {'survey_slug': survey.__dict__['slug_'+translation.get_language()],
