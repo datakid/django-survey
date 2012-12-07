@@ -4,6 +4,7 @@ from django.db import models
 from django.core.cache import cache
 from django.template.defaultfilters import date as datefilter
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from transmeta import TransMeta
 from django.contrib.auth.models import User
 
@@ -58,7 +59,7 @@ class Survey(models.Model):
         value = cache.get(self._cache_name)
         if value is not None: 
             return value
-        now = datetime.datetime.now()
+        now = timezone.now()
         if self.opens >= now:
             value = False
             duration = (now - self.opens).seconds
@@ -80,7 +81,7 @@ class Survey(models.Model):
     def status(self):
         if not self.visible: return _('private')
         if self.open: return _('open')
-        if datetime.now() < self.opens:
+        if timezone.now() < self.opens:
             return unicode(_('opens ')) + datefilter(self.opens)
         return _('closed')
 
