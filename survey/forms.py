@@ -228,9 +228,9 @@ def forms_for_survey(survey, request, edit_existing=False):
 class CustomDateWidget(TextInput):
     class Media:
         js = ('/admin/jsi18n/',
-              settings.ADMIN_MEDIA_PREFIX + 'js/core.js',
-              settings.ADMIN_MEDIA_PREFIX + "js/calendar.js",
-              settings.ADMIN_MEDIA_PREFIX + "js/admin/DateTimeShortcuts.js",
+              settings.STATIC_URL + 'admin/js/gcore.js',
+              settings.STATIC_URL + "admin/js/gcalendar.js",
+              settings.STATIC_URL + "admin/js/gadmin/DateTimeShortcuts.js",
               )
 
     def __init__(self, attrs={}):
@@ -239,9 +239,9 @@ class CustomDateWidget(TextInput):
 class CustomTimeWidget(TextInput):
     class Media:
         js = ('/admin/jsi18n/',
-              settings.ADMIN_MEDIA_PREFIX + 'js/core.js',
-              settings.ADMIN_MEDIA_PREFIX + "js/calendar.js",
-              settings.ADMIN_MEDIA_PREFIX + "js/admin/DateTimeShortcuts.js",
+              settings.STATIC_URL + 'admin/js/gcore.js',
+              settings.STATIC_URL + "admin/js/gcalendar.js",
+              settings.STATIC_URL + "admin/js/gadmin/DateTimeShortcuts.js",
               )
 
 
